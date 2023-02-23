@@ -9,7 +9,7 @@ import os
 
 
 class Hashes:
-    # honestly i'm pretty sure stag is a md4 hash and md5, but md4 won't work so I did md5.
+    # honestly i'm pretty sure stag is a md4 hash and not a md5, but md4 won't work so I did md5.
     def stag(username: str):
         data = f"{username}-{len(username)}-eucalyptus"
         stag = hashlib.new(
