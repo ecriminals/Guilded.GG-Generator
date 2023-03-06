@@ -59,7 +59,6 @@ class GuildedRegister:
         this.url = "https://www.guilded.gg/api/users?type=email"
         this.client = LasagnaMail()
         this.session = requests.Session()
-        this.email = this.client.createAddress()
         this.session.headers.update(
             {
                 "accept": "application/json, text/javascript, */*; q=0.01",
@@ -92,10 +91,10 @@ class GuildedRegister:
                 ),
             )
             payload = {
-                "email": this.email,
+                "email": this.client.createAddress(),
                 "extraInfo": {"platform": "desktop"},
                 "fullName": "ecriminals",
-                "name": username,
+                "name": f"{username}",
                 "password": "ecriminals123##~~",
             }
             this.session.headers["guilded-stag"] = Hashes.stag(username)
