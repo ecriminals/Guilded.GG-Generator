@@ -12,10 +12,7 @@ class Hashes:
     # honestly i'm pretty sure stag is a md4 hash and not a md5, but md4 won't work so I did md5.
     def stag(username: str):
         data = f"{username}-{len(username)}-eucalyptus"
-        stag = hashlib.new(
-          "md5",  
-          data.encode("utf-8")
-        ).hexdigest()
+        stag = hashlib.new("md5", data.encode("utf-8")).hexdigest()
         return stag
 
 
@@ -81,14 +78,11 @@ class GuildedRegister:
 
     def register(this):
         while True:
-            username = (
-                "ecriminals_"
-                + "".join(
-                    random.choices(
-                        string.ascii_lowercase + string.ascii_uppercase + string.digits,
-                        k=4,
-                    )
-                ),
+            username = "ecriminals_" + "".join(
+                random.choices(
+                    string.ascii_lowercase + string.ascii_uppercase + string.digits,
+                    k=4,
+                )
             )
             payload = {
                 "email": this.client.createAddress(),
@@ -98,15 +92,20 @@ class GuildedRegister:
                 "password": "ecriminals123##~~",
             }
             this.session.headers["guilded-stag"] = Hashes.stag(username)
-            return this.session.post(
-              this.url, 
-              json=payload
-            ).json()
+            return this.session.post(this.url, json=payload)
+
 
 if __name__ == "__main__":
-   # print(
-   #   GuildedServer("server invite", "hmac_cookie").join()
-   # )
-   print(
-     GuildedRegister().register()
-   )
+    for _ in range(500):
+        _register = GuildedRegister().register()
+        try:
+            _name = _register.json()["user"]["name"]
+            _email = _register.json()["user"]["email"]
+            if "hmac_signed_session" in _register.cookies:
+                _hmac = _register.cookies["hmac_signed_session"]
+                print(f"Username: {_name}\nEmail: {_email}\nHmac: {_hmac}")
+                open("./data/hmac.txt", "a").write(f"{_name}:{_hmac}\n")
+            else:
+                print(f"Username: {_name}\nEmail: {_email}\nHmac: None")
+        except:
+            pass
